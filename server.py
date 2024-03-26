@@ -1,35 +1,48 @@
 import socket
+import logging
+
+
+def setup_logger():
+    # Создаем логгер
+    logger = logging.getLogger('server_logger')
+    logger.setLevel(logging.DEBUG)
+
+    # Создаем обработчик для записи лога в файл
+    file_handler = logging.FileHandler('server.log')
+    file_handler.setLevel(logging.DEBUG)
+
+    # Создаем форматтер
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+
+    # Добавляем обработчик к логгеру
+    logger.addHandler(file_handler)
+
+    return logger
 
 
 def main():
-    default_host = '127.0.0.1'  # Значение по умолчанию для хоста
-    default_port = 12345  # Значение по умолчанию для порта
+    logger = setup_logger()
 
-    host = input(f"Введите хост (по умолчанию {default_host}): ") or default_host
-    port_str = input(f"Введите порт (по умолчанию {default_port}): ") or str(default_port)
-
-    try:
-        port = int(port_str)
-    except ValueError:
-        print("Ошибка: порт должен быть целым числом.")
-        return
+    host = '127.0.0.1'  # Локальный хост
+    port = 12345  # Произвольный порт
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
     server_socket.listen(1)
 
-    print("Сервер запущен...")
+    logger.info("Сервер запущен...")
 
     while True:
         conn, addr = server_socket.accept()
-        print("Подключение установлено с", addr)
+        logger.info(f"Подключение установлено с {addr}")
 
         try:
             while True:
                 data = conn.recv(1024).decode()
                 if not data:
                     break
-                print("Получено от клиента:", data)
+                logger.info(f"Получено от клиента: {data}")
                 conn.sendall(data.encode())
         finally:
             conn.close()
