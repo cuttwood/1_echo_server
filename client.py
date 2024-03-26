@@ -9,7 +9,6 @@ def main():
 
     message = input("Введите сообщение: ")
     client_socket.sendall(message.encode())
-    message = input("Сообщение отправлено")
 
     data = client_socket.recv(1024).decode()
     print("Получено от сервера:", data)
