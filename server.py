@@ -2,8 +2,17 @@ import socket
 
 
 def main():
-    host = '127.0.0.1'  # Локальный хост
-    port = 12345  # Произвольный порт
+    default_host = '127.0.0.1'  # Значение по умолчанию для хоста
+    default_port = 12345  # Значение по умолчанию для порта
+
+    host = input(f"Введите хост (по умолчанию {default_host}): ") or default_host
+    port_str = input(f"Введите порт (по умолчанию {default_port}): ") or str(default_port)
+
+    try:
+        port = int(port_str)
+    except ValueError:
+        print("Ошибка: порт должен быть целым числом.")
+        return
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
