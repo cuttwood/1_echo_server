@@ -1,16 +1,20 @@
 import socket
-from time import sleep
 
-sock = socket.socket()
-sock.setblocking(1)
-sock.connect(('10.38.165.12', 9090))
+def main():
+    host = '127.0.0.1'  # Локальный хост
+    port = 12345  # Произвольный порт
 
-#msg = input()
-msg = "Hi!"
-sock.send(msg.encode())
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((host, port))
 
-data = sock.recv(1024)
+    message = input("Введите сообщение: ")
+    client_socket.sendall(message.encode())
+    message = input("Сообщение отправлено")
 
-sock.close()
+    data = client_socket.recv(1024).decode()
+    print("Получено от сервера:", data)
 
-print(data.decode())
+    client_socket.close()
+
+if __name__ == '__main__':
+    main()
