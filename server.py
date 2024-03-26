@@ -1,5 +1,6 @@
 import socket
 
+
 def main():
     host = '127.0.0.1'  # Локальный хост
     port = 12345  # Произвольный порт
@@ -9,17 +10,21 @@ def main():
     server_socket.listen(1)
 
     print("Сервер запущен...")
-    conn, addr = server_socket.accept()
-    print("Подключение установлено с", addr)
 
     while True:
-        data = conn.recv(1024).decode()
-        if not data:
-            break
-        print("Получено от клиента:", data)
-        conn.sendall(data.encode())
+        conn, addr = server_socket.accept()
+        print("Подключение установлено с", addr)
 
-    conn.close()
+        try:
+            while True:
+                data = conn.recv(1024).decode()
+                if not data:
+                    break
+                print("Получено от клиента:", data)
+                conn.sendall(data.encode())
+        finally:
+            conn.close()
+
 
 if __name__ == '__main__':
     main()
